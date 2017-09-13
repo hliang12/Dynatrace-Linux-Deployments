@@ -11,7 +11,7 @@ echo "Starting Installation of Dynatrace Agent MSI"
 [ -z $3 ] && echo "Service account user name is missing "
 [ -z $4 ] && echo "Arg 1 missing"
 [ -z $5 ] && echo "Arg 1 missing"
-[ -z $6 ] && echo "Arg 1 missing" #//itm-not-rob01.uk.experian.local/Dynatrace%20Software/Software/Linux/Agents/  example entry 
+[ -z $6 ] && echo "Arg 1 missing" 
 
 echo  "DT installation location is ${DTHOME}"
 
