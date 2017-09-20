@@ -1,9 +1,7 @@
 #!/bin/bash 
 
-
 #$TOMCATDIR=$1
 #$Version7=$2
-
 
 touch Rollback.log
 DATE_WITH_TIME=`date "+[%d/%m/%Y %H:%M:%S]"`

@@ -55,12 +55,14 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 			sed -i "/<jvm-options>/a  <option value=\"-agentpath:\"$1/agent/lib/libdtagent.so\"=name=$4,server=$3\"/>"  $5/domain/configuration/domain.xml
 			
 			##check if sed worked 
-			if grep -q "<option value=\"-agentpath:"; then
+			if grep -q " <option value=\"-agentpath:\"$1/agent/lib/libdtagent.so\"=name=$4,server=$3\"/>"; then
 				## added fine
+				echo $DATE_WITH_TIME "Added agent path options in fine"
 			else 
 				##failed 
-				
+				echo $DATE_WITH_TIME "Failed to add the agent"
 			fi
+			
 		else 
 			#not found
 			

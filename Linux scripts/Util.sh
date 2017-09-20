@@ -1,5 +1,6 @@
 #!/bin/bash 
 DATE_WITH_TIME=`date "+[%d/%m/%Y %H:%M:%S]"`
+
 function ipValid {
 
 #### CHECK MALFORMED IP
