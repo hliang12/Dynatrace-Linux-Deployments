@@ -2,7 +2,7 @@
 
 #apachedir=$1
 
-touch Rollback.log
+touch /opt/Rollback.log
 DATE_WITH_TIME=`date "+[%d/%m/%Y %H:%M:%S]"`
 ## start rollback for tomcat
 [ -z $1 ] && echo $DATE_WITH_TIME "tomcat directory missing missing" | tee Rollback.log | exit 1 ## tomcat directory

@@ -1,6 +1,6 @@
 #!/bin/bash
 DATE_WITH_TIME=`date "+[%d/%m/%Y %H:%M:%S]"`
-touch ./deploy.log
+touch  /opt/deploy.log
 
 [ -z $1 ] && echo $DATE_WITH_TIME "DTHOME argument missing" | tee -a deploy.log | exit 1 ##dthome
 [ -z $2 ] && echo $DATE_WITH_TIME "Bitness missing missing" | tee -a deploy.log | exit 1 ## bitness 
@@ -16,7 +16,7 @@ touch ./deploy.log
 #APACHEDIR=$5
 #APACHETYPE=$6
 
-source ./Util.sh
+source /opt/Util.sh
 
 echo $DATE_WITH_TIME "$1 = dthome"
 echo $DATE_WITH_TIME "$2 = bit"
@@ -82,7 +82,7 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 			echo $DATE_WITH_TIME "Restarting apache service" | tee -a deploy.log 
 	
 			#### CHECK EXIT CODE AND MAYBE ROLLBACK
-			
+		
 			if [[ $6 == *".sh" ]]; then
 				#### CHECK HERE
 			else 

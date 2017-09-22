@@ -2,7 +2,7 @@
 
 ## start installation for tomcat
 
-touch ./deploy.log
+touch  /opt/deploy.log
 DATE_WITH_TIME=`date "+[%d/%m/%Y %H:%M:%S]"`
 [ -z $1 ] && echo $DATE_WITH_TIME "DTHOME argument missing" | tee -a deploy.log | exit 1 ##dthome
 [ -z $2 ] && echo $DATE_WITH_TIME "Bitness missing missing" | tee -a deploy.log | exit 1 ## bitness
@@ -20,7 +20,7 @@ DATE_WITH_TIME=`date "+[%d/%m/%Y %H:%M:%S]"`
 #AGENTNAME=$4
 #TOMCATDIR=$5
 
-source ./Util.sh
+source /opt/Util.sh
 
 BITNESS=""
 
@@ -84,8 +84,13 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 			echo $DATE_WITH_TIME "Restarting Tomcat service " | tee -a deploy.log	
 			
 	if [[ $6 == *".sh" ]]; then
-		sh $5/bin/shutdown.sh 
-		sh $5/bin/startup.sh 
+		if [ $6 == "startup.sh" ];then 
+			sh  $5/bin/shutdown.sh
+			sh  $5/bin/$6 
+		else 
+			sh $5/bin/$6 stop
+			sh $5/bin/$6 start
+		fi
 	else 
 		service $6 stop
 		service $6 start 
@@ -93,9 +98,9 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 			
 else
 
-        echo $DATE_WITH_TIME "Dynatrace Dir = " + [ -d "$DTHOME" ]
-        echo $DATE_WITH_TIME "Tomcat Dir = " + [ -d "$TOMCATDIR" ]
-        echo $DATE_WITH_TIME "Please input correct directories"
+        echo $DATE_WITH_TIME "Dynatrace Dir = " + $1
+        echo $DATE_WITH_TIME "Tomcat Dir = " + $5
+		echo $DATE_WITH_TIME "Please input correct directories"
 
 fi
 

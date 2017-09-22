@@ -2,7 +2,7 @@
 
 #DTHOME=$1
 DATE_WITH_TIME=`date "+[%d/%m/%Y %H:%M:%S]"`
-touch Rollback.log
+touch  /opt/Rollback.log
 [ -z $1 ] && echo $DATE_WITH_TIME "dthome directory is missing" | tee Rollback.log | exit 1
 
 echo $DATE_WITH_TIME "Checking for dynaTraceWebServerAgent service in init.d" | tee Rollback.log |exit 1

@@ -2,8 +2,7 @@
 
 ## start installation for JBOSS 6 
 DATE_WITH_TIME=`date "+[%d/%m/%Y %H:%M:%S]"`
-touch ./deploy.log
-
+touch  /opt/deploy.log
 [ -z $1 ] && echo $DATE_WITH_TIME "DTHOME argument missing" | tee -a deploy.log | exit 1 ##dthome
 [ -z $2 ] && echo $DATE_WITH_TIME "Bitness missing missing" | tee -a deploy.log | exit 1 ## bitness 
 [ -z $3 ] && echo $DATE_WITH_TIME "Collector IP missing" | tee -a deploy.log | exit 1 ## collectr ip 
@@ -17,7 +16,7 @@ touch ./deploy.log
 #AGENTNAME = $4
 #JBOSSDIR = $5
 
-source ./Util.sh
+source /opt/Util.sh
 
 #### CHECK MALFORMED IP
 if ! ipValid $3; then 

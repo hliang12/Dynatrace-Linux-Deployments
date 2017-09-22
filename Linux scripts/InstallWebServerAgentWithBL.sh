@@ -1,5 +1,6 @@
 #!/bin/bash
 DATE_WITH_TIME=`date "+[%d/%m/%Y %H:%M:%S]"`
+touch  /opt/deploy.log
 echo $DATE_WITH_TIME "Starting Installation of Dynatrace Agent MSI"
 
 #DTHOME=$1
@@ -15,7 +16,7 @@ echo $DATE_WITH_TIME  "DT installation location is $DTHOME"
 
 ## tar them 
 
-tar -xvf /opt/dynatrace-agent-"$2" 
+tar -xvf /opt/dynatrace-wsagent*.tar 
 
 if [ $? -eq 0 ]; then
 	echo $DATE_WITH_TIME "Untar web server agent file successful" | tee deploy.log
@@ -48,6 +49,10 @@ else
 	exit
 fi
 
+
+## copy dynatrace web server agent service to /etc/init.d
+
+cp $1/dynatrace-$2/init.d/dynaTraceWebServerAgent /etc/init.d
 
 echo $DATE_WITH_TIME "Installed okay if no errors"
 

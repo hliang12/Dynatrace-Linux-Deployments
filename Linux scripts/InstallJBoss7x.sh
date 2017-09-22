@@ -2,7 +2,7 @@
 
 ## start installation for JBOSS 7
 DATE_WITH_TIME=`date "+[%d/%m/%Y %H:%M:%S]"`
-touch ./deploy.log
+touch  /opt/deploy.log
 
 [ -z $1 ] && echo $DATE_WITH_TIME "DTHOME argument missing" | tee -a deploy.log |exit 1 ##dthome
 [ -z $2 ] && echo $DATE_WITH_TIME "Bitness missing missing" |tee -a deploy.log | exit 1 ## bitness 
@@ -21,7 +21,7 @@ touch ./deploy.log
 standalone=standalonemode
 domain=domainmode
 
-source ./Util.sh
+source /opt/Util.sh
 
 #### CHECK MALFORMED IP
 if ! ipValid $3; then 
@@ -61,12 +61,22 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 			else 
 				##failed 
 				echo $DATE_WITH_TIME "Failed to add the agent"
+				exit 1
 			fi
 			
 		else 
 			#not found
-			
-			
+			 sed -i "/<heap .*>/a <jvm-options><option value=\"-agentpath:\"$1/agent/lib/libdtagent.so\"=name=$4,server=$3\"/> <jvm-options/>" $5/domain/configuration/domain.xml
+
+			 ##check if sed worked 
+			if grep -q "<jvm-options><option value=\"-agentpath:\"$1/agent/lib/libdtagent.so\"=name=$4,server=$3\"/> <jvm-options/>"; then
+				## added fine
+				echo $DATE_WITH_TIME "Added agent path options in fine"
+			else 
+				##failed 
+				echo $DATE_WITH_TIME "Failed to add the agent"
+				exit 1
+			fi
 		fi
 		
 	else 

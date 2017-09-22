@@ -1,14 +1,15 @@
 #!/bin/bash
 DATE_WITH_TIME=`date "+[%d/%m/%Y %H:%M:%S]"`
+touch  /opt/deploy.log
 echo $DATE_WITH_TIME "Starting Installation of Dynatrace Agent MSI"
 
 #DTHOME=$1
 #VERSION=$2
 #bit = $3
 
-[ -z $1 ] && echo $DATE_WITH_TIME "Arg 1 missing"
-[ -z $2 ] && echo $DATE_WITH_TIME "Arg 1 missing"
-[ -z $3 ] &&  echo $DATE_WITH_TIME "Arg 1 missing" ## bitness do i even need this?
+[ -z $1 ] && echo $DATE_WITH_TIME "DTHOME argument is missing"
+[ -z $2 ] && echo $DATE_WITH_TIME "Agent version is missing"
+
 
 
 echo $DATE_WITH_TIME  "DT installation location is ${DTHOME}"
@@ -17,7 +18,7 @@ echo $DATE_WITH_TIME "Starting to run the installer"
 
 ## do tar here
 
-java -jar /opt/dynatrace-agent-.*.jar -b "$3" -t $"1" -y
+java -jar /opt/dynatrace-agent*.jar -t $"1" -y
 
 
 if [ $? -eq 0 ]; then

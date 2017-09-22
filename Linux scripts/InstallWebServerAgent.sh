@@ -1,5 +1,6 @@
 #!/bin/bash
 DATE_WITH_TIME=`date "+[%d/%m/%Y %H:%M:%S]"`
+touch  /opt/deploy.log
 echo $DATE_WITH_TIME "Starting Installation of Dynatrace Agent MSI"
 
 #DTHOME=$1
@@ -14,7 +15,7 @@ echo $DATE_WITH_TIME "Starting Installation of Dynatrace Agent MSI"
 [ -z $6 ] && echo $DATE_WITH_TIME "File Distribution server is missing" #//itm-not-rob01.uk.experian.local/Dynatrace%20Software/Software/Linux/Agents/  example entry 
 
 
-echo $DATE_WITH_TIME  "DT installation location is "$DTHOME""
+echo $DATE_WITH_TIME  "DT installation location is "$1""
 
 ## make mount point
 
@@ -39,7 +40,7 @@ fi
 
 ##copying files over
 
-cp -p -u /tmp/mountPoint/dynatrace-wsagent-$2*.tar /opt/dynatrace-agent-$2.tar
+cp -p -u /tmp/mountPoint/dynatrace-wsagent-$2*.tar /opt/dynatrace-wsagent-$2.tar
 
 if [ $? -eq 0 ]; then
 	echo $DATE_WITH_TIME "Copied Web Server agent tar file" | tee deploy.log
@@ -52,13 +53,9 @@ echo $DATE_WITH_TIME "Finished downloading DT installer"
 
 echo $DATE_WITH_TIME "Starting to run the installer"
 
-## do tar here
-#java -jar /opt/dynatrace-agent-"$2" -b "$3" -t $"1" -y
-
-
 ## tar them 
 
-tar -xvf /opt/dynatrace-agent-"$2" 
+tar -xvf /opt/dynatrace-wsagent-$2.tar
 
 if [ $? -eq 0 ]; then
 	echo $DATE_WITH_TIME "Untar web server agent file successful" | tee deploy.log
@@ -90,6 +87,10 @@ else
 	echo $DATE_WITH_TIME "Failed to run web server agent install script, exit code "$?"" | tee deploy.log
 	exit
 fi
+
+## copy dynatrace web server agent service to /etc/init.d
+
+cp $1/dynatrace-$2/init.d/dynaTraceWebServerAgent /etc/init.d
 
 ## CLEANUP 
 
