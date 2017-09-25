@@ -43,7 +43,7 @@ fi
 
 if [ -d "$1" ] && [ -d "$5" ]; then
 
-	if [ "$6" = "standalone"]; then
+	if [ "$6" = "standalone" ]; then
 
 		echo  "JAVA_OPTS=\"\$JAVA_OPTS -agentpath:\""$1"/agent/lib"$BITNESS"/libdtagent.so\"=name="$4",server="$3"\"" >> "$5"/bin/standalone.conf
 
