@@ -9,7 +9,8 @@ touch  /opt/deploy.log
 [ -z $3 ] && echo $DATE_WITH_TIME "Collector IP missing" |tee -a deploy.log |exit 1 ## collectr ip ;
 [ -z $4 ] && echo $DATE_WITH_TIME "Agent Name missing"  | tee -a deploy.log |exit 1 ## agent name 
 [ -z $5 ] && echo $DATE_WITH_TIME "JBOSS dir directory missing missing" | tee -a deploy.log |exit 1 ## jboss dir directory
-[ -z $6 ]  && echo $DATE_WITH_TIME "mode type is missing" | tee -a deploy.log |exit 1 ## mode type 
+[ -z $6 ] && echo $DATE_WITH_TIME "mode type is missing" | tee -a deploy.log |exit 1 ## mode type 
+[ -z $7 ] && echo $DATE_WITH_TIME "JBOSS SERVICE" | tee -a deploy.log |exit 1 ## mode type 
 
 #DTHOME=$1 
 #BITNESS=$2
@@ -18,8 +19,6 @@ touch  /opt/deploy.log
 #JBOSSDIR=$5
 #MODE=$6
 
-standalone=standalonemode
-domain=domainmode
 
 source /opt/Util.sh
 
@@ -44,18 +43,18 @@ fi
 
 if [ -d "$1" ] && [ -d "$5" ]; then
 
-	if ["$6" = "standalone"]; then
+	if [ "$6" = "standalone"]; then
 
-		echo  "JAVA_OPTS=\"$JAVA_OPTS -agentpath:\""$1"/agent/lib"$BITNESS"/libdtagent.so\"=name="$4",server="$3"\"" >> "$5"/bin/standalone.conf
+		echo  "JAVA_OPTS=\"\$JAVA_OPTS -agentpath:\""$1"/agent/lib"$BITNESS"/libdtagent.so\"=name="$4",server="$3"\"" >> "$5"/bin/standalone.conf
 
-	elif  [ "${MODE,,}" = "${domain,,}" ]; then
+	elif  [ "$6" = "domain" ]; then
 	
 		if grep -q "<jvm-options>" ""$5"/domain/configuration/domain.xml"; then
 			#found add it into the jvm options part
 			sed -i "/<jvm-options>/a  <option value=\"-agentpath:\"$1/agent/lib/libdtagent.so\"=name=$4,server=$3\"/>"  $5/domain/configuration/domain.xml
 			
 			##check if sed worked 
-			if grep -q " <option value=\"-agentpath:\"$1/agent/lib/libdtagent.so\"=name=$4,server=$3\"/>"; then
+			if grep -q "<option value=\"-agentpath:\"$1/agent/lib/libdtagent.so\"=name=$4,server=$3\"/>" "$5/domain/configuration/domain.xml" ; then
 				## added fine
 				echo $DATE_WITH_TIME "Added agent path options in fine"
 			else 
@@ -69,7 +68,7 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 			 sed -i "/<heap .*>/a <jvm-options><option value=\"-agentpath:\"$1/agent/lib/libdtagent.so\"=name=$4,server=$3\"/> <jvm-options/>" $5/domain/configuration/domain.xml
 
 			 ##check if sed worked 
-			if grep -q "<jvm-options><option value=\"-agentpath:\"$1/agent/lib/libdtagent.so\"=name=$4,server=$3\"/> <jvm-options/>"; then
+			if grep -q "<jvm-options><option value=\"-agentpath:\"$1/agent/lib/libdtagent.so\"=name=$4,server=$3\"/> <jvm-options/>" "$5/domain/configuration/domain.xml"; then
 				## added fine
 				echo $DATE_WITH_TIME "Added agent path options in fine"
 			else 
@@ -82,6 +81,7 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 	else 
 		
 		echo $DATE_WITH_TIME "Please input a valid mode which JBoss is running in, correct inputs are standalonemode or domainmode"
+		exit 1
 		
 	fi	
 		

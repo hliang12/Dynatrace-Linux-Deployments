@@ -5,11 +5,11 @@ echo $DATE_WITH_TIME "Starting Installation of Dynatrace Agent MSI"
 
 #DTHOME=$1
 #VERSION=$2
-#bit = $3
+
 
 [ -z $1 ] && echo $DATE_WITH_TIME "Dthome directory is missing"
 [ -z $2 ] && echo $DATE_WITH_TIME "Agent Version is missing"
-[ -z $3 ] && echo $DATE_WITH_TIME ""
+
 
 
 echo $DATE_WITH_TIME  "DT installation location is $DTHOME"

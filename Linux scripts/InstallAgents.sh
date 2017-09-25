@@ -24,7 +24,7 @@ else
 fi
 
 
-mount -v -t cifs $5 /tmp/mountPoint -o username=$3,password=$4, sec=ntlm
+mount -v -t cifs $5 /tmp/mountPoint -o username=$3,password=$4,sec=ntlm
 if [ $? -eq 0 ]; then
 	echo $DATE_WITH_TIME "Mounted repo location" | tee deploy.log
 else 
