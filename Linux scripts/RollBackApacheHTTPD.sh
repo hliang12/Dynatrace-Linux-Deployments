@@ -2,17 +2,22 @@
 
 #apachedir=$1
 
-touch /opt/Rollback.log
+touch /opt/Rollback.log ## Create a rollback log 
 DATE_WITH_TIME=`date "+[%d/%m/%Y %H:%M:%S]"`
 ## start rollback for tomcat
-[ -z $1 ] && echo $DATE_WITH_TIME "tomcat directory missing missing" | tee Rollback.log | exit 1 ## tomcat directory
 
-#### need a check for setenv.sh if not then create one
+## check if required variables have been inputted 
+[ -z $1 ] && echo $DATE_WITH_TIME "tomcat directory missing missing" | tee Rollback.log | exit 1 
+
+
 echo $DATE_WITH_TIME "Rollback Apache " | tee Rollback.log 
 echo $DATE_WITH_TIME "Removing module from httpd.conf" | tee Rollback.log 
+
+## remove the agent configuration 
 sed -i -e "/LoadModule dtagent.*/d" "$1"/httpd.conf
 
-if grep -q "LoadModule dtagent" $1/bin/setenv.sh; then
+## check if the sed command has removed it 
+if ! grep -q "LoadModule dtagent" $1/bin/setenv.sh; then
 			#found
 		echo $DATE_WITH_TIME "Successfully removed agent configuration" | tee -a Rollback.log
 else 

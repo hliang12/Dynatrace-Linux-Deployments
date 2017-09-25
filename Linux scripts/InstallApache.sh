@@ -1,7 +1,8 @@
 #!/bin/bash
 DATE_WITH_TIME=`date "+[%d/%m/%Y %H:%M:%S]"`
-touch  /opt/deploy.log
+touch  /opt/deploy.log ## Create a deploy log 
 
+##Check if variables are have been inputted 
 [ -z $1 ] && echo $DATE_WITH_TIME "DTHOME argument missing" | tee -a deploy.log | exit 1 ##dthome
 [ -z $2 ] && echo $DATE_WITH_TIME "Bitness missing missing" | tee -a deploy.log | exit 1 ## bitness 
 [ -z $3 ] && echo $DATE_WITH_TIME "Collector IP missing" | tee -a deploy.log | exit 1 ## collectr ip 
@@ -47,15 +48,18 @@ fi
 echo $DATE_WITH_TIME "Checking if DTHOME and apache directory exists" | tee -a deploy.log
 if [ -d "$1" ] && [ -d "$5" ]; then
 
+			## check if httpd.conf exists
 			if [ ! -e "$5"/httpd.conf ]; then
 				echo $DATE_WITH_TIME "httpd.conf file does not exist in the following directory "$5"/httpd.confi " | tee -a deploy.log
 				echo $DATE_WITH_TIME "Exiting script" | tee -a deploy.log
 				exit 1
 			fi
 			
+			## add module to httpd.conf
 			echo $DATE_WITH_TIME "Adding Agent Module to httpd.conf" | tee -a deploy.log
 			echo  "LoadModule dtagent_module \"$1/agent/lib"$BITNESS"/libdtagent.so\" " >> "$5"/httpd.conf
 			
+			## check if the echo command succeeded 
 			if [ $? -eq 0 ]; then
 				echo $DATE_WITH_TIME "Inserted agent module with no errors" | tee -a deploy.log
 			else if [ $? -eq 1 ]; then
@@ -63,26 +67,28 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 				 fi
 			fi
 			
+			
 			#echo $DATE_WITH_TIME "Adding Agent name to httpd.conf" | tee -a deploy.log
 			#echo $DATE_WITH_TIME "ApacheNodeName \"$4\"" >> "$5"/httpd.conf
 			
 			echo $DATE_WITH_TIME "Editing agent details in dtwsagent.ini"  | tee -a deploy.log
 			
+			## check if the dtwsagent.ini file exists
 			if [ ! -e "$1"/agent/conf/dtwsagent.ini ]; then
 				echo $DATE_WITH_TIME "dtwsagent.ini file does not exist in the following directory "$1"/agent/conf/dtwsagent.ini " | tee -a deploy.log
+				echo $DATE_WITH_TIME "Rolling back changes" | tee -a deploy.log
+				sh /opt/RollBackApacheHTTPD.sh $5
 				echo $DATE_WITH_TIME "Exiting script" | tee -a deploy.log
 				exit 1
 			fi
 			
-			#### SED CUSTOM EXIT CODE 
-			
+		
+			## edit stwsagent.ini to set up web server agent to connect to collector and has correct name
 			sed -i "s/dtwsagent/$4/g" "$1"/agent/conf/dtwsagent.ini
 			sed -i "s/localhost/$3/g" "$1"/agent/conf/dtwsagent.ini
 
 			echo $DATE_WITH_TIME "Restarting apache service" | tee -a deploy.log 
 	
-			#### CHECK EXIT CODE AND MAYBE ROLLBACK
-		
 			if [[ $6 == *".sh" ]]; then
 				#### CHECK HERE
 			else 

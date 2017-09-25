@@ -3,19 +3,20 @@
 
 #$JBOSSDIR=$1
 
-touch /opt/Rollback.log
+touch /opt/Rollback.log ## Create a rollback log 
 DATE_WITH_TIME=`date "+[%d/%m/%Y %H:%M:%S]"`
-## start rollback for tomcat 
+
+
+## check if required variables have been inputted 
 [ -z $1 ] && echo $DATE_WITH_TIME "jboss directory missing missing" | tee Rollback.log | exit 1 ## tomcat directory
 
 
-### need path for tomcat? otherwise have to recursively go find it 
-#### need a check for setenv.sh if not then create one 
-
 echo $DATE_WITH_TIME "Removing DTHOME" | tee Rollback.log | exit 1
+
+## remove the agent configuration 
 sed -i -e "/JAVA_OPTS=\"\$JAVA_OPTS -agentpath:.*/d" $1/bin/run.conf 
 
-
+## check if the sed command has removed it 
 if grep -q "JAVA_OPTS=\"\$JAVA_OPTS -agentpath:" $1/bin/run.conf; then
 			#found
 		echo $DATE_WITH_TIME "Successfully removed agent configuration" | tee -a Rollback.log
@@ -25,7 +26,6 @@ else
 		echo $DATE_WITH_TIME "Exiting script" | tee -a Rollback.log
 		exit 1
 fi
-
 
 
 echo $DATE_WITH_TIME "Finihsed if no errors" | tee Rollback.log | exit 1

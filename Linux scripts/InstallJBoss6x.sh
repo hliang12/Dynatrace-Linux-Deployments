@@ -2,7 +2,9 @@
 
 ## start installation for JBOSS 6 
 DATE_WITH_TIME=`date "+[%d/%m/%Y %H:%M:%S]"`
-touch  /opt/deploy.log
+touch  /opt/deploy.log ## Create a deploy log 
+
+##Check if variables are have been inputted 
 [ -z $1 ] && echo $DATE_WITH_TIME "DTHOME argument missing" | tee -a deploy.log | exit 1 ##dthome
 [ -z $2 ] && echo $DATE_WITH_TIME "Bitness missing missing" | tee -a deploy.log | exit 1 ## bitness 
 [ -z $3 ] && echo $DATE_WITH_TIME "Collector IP missing" | tee -a deploy.log | exit 1 ## collectr ip 
@@ -38,19 +40,23 @@ else
 fi
 
 echo $DATE_WITH_TIME "Checking if jboss and dthome directories exist" | tee -a deploy.log 
+
+## check if directories given exist
 if [ -d "$1" ] && [ -d "$5" ]; then
 	
 	echo $DATE_WITH_TIME "Inserting agent path to run.conf" | tee -a deploy.log
 	
+	##inserting agent path
 	echo "JAVA_OPTS=\"\$JAVA_OPTS -agentpath:\""$1"/agent/lib"$BITNESS"/libdtagent.so\"=name="$4",server="$3"\"" >> "$5"/bin/run.conf
 	
+	## check if the echo command worked
 	if [ $? -eq 0 ]; then
 		echo $DATE_WITH_TIME "Inserted agentpath with no errors" | tee -a deploy.log
 	else 
 		echo $DATE_WITH_TIME "Failed to insert agent path, exit code 1" | tee -a deploy.log
 				
 	fi
-	
+	## check if the agentpathis in run.conf
 	if grep -q "JAVA_OPTS=\"\$JAVA_OPTS -agentpath:\""$1"/agent/lib"$BITNESS"/libdtagent.so\"=name="$4",server="$3"\"" "$5"/bin/run.conf; then
 				#found
 			echo $DATE_WITH_TIME "Inserted agentpath successfully" | tee -a deploy.log
@@ -64,7 +70,7 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 	
 	echo $DATE_WITH_TIME "Restarting Jboss service " | tee -a deploy.log
 
-	### CHECK EXIT ERROR CODE MAYBE ROLLBACK 
+	## restart services
 	
 	if [[ $6 == *".sh" ]]; then
 		sh "$5"/bin/shutdown.sh 
