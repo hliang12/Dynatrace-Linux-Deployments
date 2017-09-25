@@ -1,8 +1,12 @@
 #!/bin/bash 
 
 ## start installation for tomcat 
-touch  /opt/deploy.log
+
+
+touch  /opt/deploy.log  ## Create a deploy log 
 DATE_WITH_TIME=`date "+[%d/%m/%Y %H:%M:%S]"`
+
+##Check if variables are have been inputted 
 [ -z $1 ] && echo $DATE_WITH_TIME "DTHOME argument missing" | tee -a deploy.log | exit 1 ##dthome
 [ -z $2 ] && echo $DATE_WITH_TIME "Bitness missing missing" | tee -a deploy.log | exit 1 ## bitness 
 [ -z $3 ] && echo $DATE_WITH_TIME "Collector IP missing" | tee -a deploy.log | exit 1 ## collectr ip 
@@ -16,6 +20,7 @@ DATE_WITH_TIME=`date "+[%d/%m/%Y %H:%M:%S]"`
 #AGENTNAME=$4
 #TOMCATDIR=$5
 
+##import the module Util.sh which is located in /opt
 source /opt/Util.sh
 
 BITNESS = ""
@@ -40,13 +45,10 @@ fi
 
 
 echo $DATE_WITH_TIME "Checking if tomcat and dthome directories exist" | tee -a deploy.log 
-
+## Checking if the Tomcat directories exist
 if [ -d "$1" ] && [ -d "$5" ]; then
 
-  ### this is for tomcat 6.x
-  ### catalina.sh in tomcat_home/bin
-
-	## does catalina exist? 
+	## Check if catalina.sh file exists
 	if [ ! -e "$5"/bin/catalina.sh ]; then
 		echo $DATE_WITH_TIME "catalina.sh file does not exist in the following directory "$5"/bin/catalina.sh " | tee -a deploy.log
 		echo $DATE_WITH_TIME "Exiting script" | tee -a deploy.log
@@ -54,12 +56,11 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 	fi
 		
 	echo $DATE_WITH_TIME "Inserting agent path to catalina.sh" | tee -a deploy.log
-  
-    #echo "export CATALINA_OPTS=-agentpath:$1/agent/lib/libdtagent.so=name=$4,server=$3" >> $5/bin/catalina.sh
 	
-	##### NEED EXIT CODE CUSTOM 
+	## Insert agent path in catalina.sh (The sed command is looking for /# OS specific support. and will insert the agentpath here before it (This will insert the agentpaht at the begining of the file)
 	sed -i "/# OS specific support./i export CATALINA_OPTS=-agentpath:$1/agent/lib$BITNESS/libdtagent.so=name=$4,server=$3" $5/bin/catalina.sh
 	
+	## check if the agent path has inserted properly, if not then exit
 	if grep -q "export CATALINA_OPTS=-agentpath:" $5/bin/catalina.sh; then
 			#found
 			echo $DATE_WITH_TIME "Inserted agentpath successfully" | tee -a deploy.log
@@ -71,14 +72,10 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 			exit 1
 	fi
 	
-	### SED EXIT CODE			
-	
-	###### check for exit code of this sed <- may have to roll back 
 	echo $DATE_WITH_TIME "Restarting Tomcat service " | tee -a deploy.log
 
-	#sh $5/bin/catalina.sh stop
-	#sh $5/bin/catalina.sh start
 	
+	## stop and start services depending on if a startup script was inputted as a variable (OUTAGE HERE)
 	if [[ $6 == *".sh" ]]; then
 		if [ $6 == "startup.sh" ];then 
 			sh  $5/bin/shutdown.sh
@@ -95,9 +92,9 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 	## check exit code here as well may have to roll back 
 
 else
-
-	echo $DATE_WITH_TIME "Dynatrace Dir = " + [ -d "$1" ]
-	echo $DATE_WITH_TIME "Tomcat Dir = " + [ -d "$5" ]
+	## Either of the directories do not exist
+	echo $DATE_WITH_TIME "Dynatrace Dir = "  "$1" 
+	echo $DATE_WITH_TIME "Tomcat Dir = "  "$5" 
 	echo $DATE_WITH_TIME"Please input correct directories"
 	
 fi

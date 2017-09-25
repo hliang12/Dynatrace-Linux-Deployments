@@ -88,6 +88,9 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 			else 
 				service $6 restart
 			fi	
+			
+			echo $DATE_WITH_TIME "Starting dynatrace web server agent" | tee -a deploy.log 
+			sh /etc/init.d/dynaTraceWebServerAgent 
 	else
 	
 		echo $DATE_WITH_TIME "Dynatrace Dir = " + [ -d "$1" ] | tee -a deploy.log 

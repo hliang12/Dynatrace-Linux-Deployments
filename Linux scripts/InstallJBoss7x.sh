@@ -78,6 +78,15 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 			fi
 		fi
 		
+		echo $DATE_WITH_TIME "Restarting jboss services" | tee -a deploy.log 
+		if [[ $6 == *".sh" ]]; then
+			sh "$5"/bin/shutdown.sh 
+			sh "$5"/bin/run.sh
+		else 
+			service $6 stop
+			service $6 start 
+		fi
+		
 	else 
 		
 		echo $DATE_WITH_TIME "Please input a valid mode which JBoss is running in, correct inputs are standalonemode or domainmode"

@@ -2,8 +2,10 @@
 
 ## start installation for tomcat
 
-touch  /opt/deploy.log
+touch  /opt/deploy.log ## Create a deploy log 
 DATE_WITH_TIME=`date "+[%d/%m/%Y %H:%M:%S]"`
+
+##Check if variables are have been inputted 
 [ -z $1 ] && echo $DATE_WITH_TIME "DTHOME argument missing" | tee -a deploy.log | exit 1 ##dthome
 [ -z $2 ] && echo $DATE_WITH_TIME "Bitness missing missing" | tee -a deploy.log | exit 1 ## bitness
 [ -z $3 ] && echo $DATE_WITH_TIME "Collector IP missing" | tee -a deploy.log  | exit 1 ## collectr ip
@@ -11,15 +13,13 @@ DATE_WITH_TIME=`date "+[%d/%m/%Y %H:%M:%S]"`
 [ -z $5 ] && echo $DATE_WITH_TIME "TomCat directory missing missing" | tee -a deploy.log | exit 1 ## tomcat directory
 [ -z $6 ] && echo $DATE_WITH_TIME "TomCat service  missing missing" | tee -a deploy.log  | exit 1 ## tomcat directory
 
-### need path for tomcat? otherwise have to recursively go find it
-#### need a check for setenv.sh if not then create one
-
 #DTHOME=$1
 #BITNESS=$2
 #COLLECTORIP =$3
 #AGENTNAME=$4
 #TOMCATDIR=$5
 
+##import the module Util.sh which is located in /opt
 source /opt/Util.sh
 
 BITNESS=""
@@ -43,19 +43,22 @@ if ! ipValid $3; then
 fi
 
 echo $DATE_WITH_TIME "Checking if tomcat and dthome directories exist" | tee -a deploy.log 
-
+## Check if inputted directories exist
 if [ -d "$1" ] && [ -d "$5" ]; then
 
-        ## check catalina_base/bin or catalina_home/bin for setenv.bat/setenv.sh
+        ## Insert agent path into setenv.sh 
 			echo $DATE_WITH_TIME "Inserting agent path to setenv.sh" | tee -a deploy.log
             echo  "export CATALINA_OPTS=\"-agentpath:"$1"/agent/lib"$BITNESS"/libdtagent.so=name="$4",server="$3"" >> "$5"/bin/setenv.sh
+			
+		## check if the echo command succeeded, if it failed then exit the script
 			if [ $? -eq 0 ]; then
 				echo $DATE_WITH_TIME "Inserted agentpath with no errors" | tee -a deploy.log
 			else if [ $? -eq 1 ]; then
 				echo $DATE_WITH_TIME "Failed to insert agent path, exit code 1" | tee -a deploy.log
 				 fi
 			fi
-			
+		
+		## check if the agent path has been inserted , exit if it does not find it
 			if grep -q "export CATALINA_OPTS=\"-agentpath:" $5/bin/setenv.sh; then
 				#found
 					echo $DATE_WITH_TIME "Inserted agentpath successfully" | tee -a deploy.log
@@ -67,20 +70,20 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 					exit 1
 			fi
 			
-			# CHECK IF SETENV.SH IS EXECUTABLE
+			# CHECK IF SETENV.SH IS EXECUTABLE, not all tomcat 7's have setenv.sh  so echo would create one if it doesn't exist
 			if [[ ! -x "$5"bin/setenv.sh ]]; then
 				chmod +rx "$5"/bin/setenv.sh
 				if [ $? -eq 1 ]; then	
 					echo $DATE_WITH_TIME "Failed to make setenv.sh executable" | tee -a deploy.log
 					
-					### ROLLBACK 
+					### ROLLBACK if the unable to make setenv.sh executable and remove agent pathing
 					echo $DATE_WITH_TIME "Rolling Back" | tee -a deploy.log
-					sh RollbackTomCat true
+					sh /opt/RollbackTomCat true
 					exit 0 
 				fi
 			fi
-			### CHECK ERROR CODE HERE MAY HAVE TO ROLLBACK 
-			### RESTARTS HERE 
+
+			### RESTARTS HERE  OUTAGE
 			echo $DATE_WITH_TIME "Restarting Tomcat service " | tee -a deploy.log	
 			
 	if [[ $6 == *".sh" ]]; then
@@ -98,8 +101,8 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 			
 else
 
-        echo $DATE_WITH_TIME "Dynatrace Dir = " + $1
-        echo $DATE_WITH_TIME "Tomcat Dir = " + $5
+        echo $DATE_WITH_TIME "Dynatrace Dir = "  $1
+        echo $DATE_WITH_TIME "Tomcat Dir = "  $5
 		echo $DATE_WITH_TIME "Please input correct directories"
 
 fi

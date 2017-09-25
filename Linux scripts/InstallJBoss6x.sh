@@ -67,7 +67,7 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 	### CHECK EXIT ERROR CODE MAYBE ROLLBACK 
 	
 	if [[ $6 == *".sh" ]]; then
-		sh "$5"/bin/shutdown.sh -S
+		sh "$5"/bin/shutdown.sh 
 		sh "$5"/bin/run.sh
 	else 
 		service $6 stop
