@@ -82,7 +82,7 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 				exit 1
 			fi
 			
-		
+			### check if it has been changed already
 			## edit stwsagent.ini to set up web server agent to connect to collector and has correct name
 			sed -i "s/dtwsagent/$4/g" "$1"/agent/conf/dtwsagent.ini
 			sed -i "s/localhost/$3/g" "$1"/agent/conf/dtwsagent.ini
@@ -90,13 +90,26 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 			echo $DATE_WITH_TIME "Restarting apache service" | tee -a deploy.log 
 	
 			if [[ $6 == *".sh" ]]; then
-				#### CHECK HERE
+				sh $5/bin/$6 restart
 			else 
 				service $6 restart
 			fi	
 			
+			## for restart could use apachectl start | stop | restart
+			
 			echo $DATE_WITH_TIME "Starting dynatrace web server agent" | tee -a deploy.log 
-			sh /etc/init.d/dynaTraceWebServerAgent 
+			
+			### Check for dynatrace user 
+			
+			if getend passwd | grep appsadm; then
+				sudo su appsadm /etc/init.d/dynaTraceWebServerAgent start
+			else 
+			
+				echo $DATE_WITH_TIME "Unable to find appsadm user on the system" | tee -a deploy.log 
+				echo $DATE_WITH_TIME "rolling back and exiting script" | tee -a deploy.log 
+				sh /opt/RollBackApacheHTTPD.sh $5
+			fi	
+			
 	else
 	
 		echo $DATE_WITH_TIME "Dynatrace Dir = " + [ -d "$1" ] | tee -a deploy.log 
