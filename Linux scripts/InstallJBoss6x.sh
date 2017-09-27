@@ -10,7 +10,7 @@ touch  /opt/deploy.log ## Create a deploy log
 [ -z $3 ] && echo $DATE_WITH_TIME "Collector IP missing" | tee -a deploy.log | exit 1 ## collectr ip 
 [ -z $4 ] && echo $DATE_WITH_TIME "Agent Name missing" | tee -a deploy.log | exit 1 ## agent name 
 [ -z $5 ] && echo $DATE_WITH_TIME "JBOSS dir directory missing missing" | tee -a  deploy.log | exit 1 ## jboss dir directory
-[ -z $6 ] && echo $DATE_WITH_TIME "JBOSS service name missing missing" | tee -a  deploy.log | exit 1 ## jboss dir directory
+#[ -z $6 ] && echo $DATE_WITH_TIME "JBOSS service name missing missing" | tee -a  deploy.log | exit 1 ## jboss dir directory
 
 #DTHOME = $1 
 #BITNESS = $2
@@ -68,17 +68,17 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 			exit 1
 	fi
 	
-	echo $DATE_WITH_TIME "Restarting Jboss service " | tee -a deploy.log
+	echo $DATE_WITH_TIME "YOU MUST RESTART JBOSS SERVICES FOR AGENT TO BE INJECTED" | tee -a deploy.log
 
-	## restart services
+
 	
-	if [[ $6 == *".sh" ]]; then
-		sh "$5"/bin/shutdown.sh 
-		sh "$5"/bin/run.sh
-	else 
-		service $6 stop
-		service $6 start 
-	fi
+#	if [[ $6 == *".sh" ]]; then
+#		sh "$5"/bin/shutdown.sh 
+#		sh "$5"/bin/run.sh
+#	else 
+#		service $6 stop
+#		service $6 start 
+#	fi
 	
 else 
 	

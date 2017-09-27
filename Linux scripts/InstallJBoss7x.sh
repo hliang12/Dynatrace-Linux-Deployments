@@ -10,7 +10,7 @@ touch  /opt/deploy.log
 [ -z $4 ] && echo $DATE_WITH_TIME "Agent Name missing"  | tee -a deploy.log |exit 1 ## agent name 
 [ -z $5 ] && echo $DATE_WITH_TIME "JBOSS dir directory missing missing" | tee -a deploy.log |exit 1 ## jboss dir directory
 [ -z $6 ] && echo $DATE_WITH_TIME "mode type is missing" | tee -a deploy.log |exit 1 ## mode type 
-[ -z $7 ] && echo $DATE_WITH_TIME "JBOSS SERVICE" | tee -a deploy.log |exit 1 ## mode type 
+#[ -z $7 ] && echo $DATE_WITH_TIME "JBOSS SERVICE" | tee -a deploy.log |exit 1 ## mode type 
 
 #DTHOME=$1 
 #BITNESS=$2
@@ -84,14 +84,14 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 			fi
 		fi 
 		
-		echo $DATE_WITH_TIME "Restarting jboss services" | tee -a deploy.log 
-		if [[ $6 == *".sh" ]]; then
-			sh "$5"/bin/shutdown.sh 
-			sh "$5"/bin/run.sh
-		else 
-			service $6 stop
-			service $6 start 
-		fi
+		echo $DATE_WITH_TIME "YOU MUST RESTART JBOSS SERVICES FOR AGENT TO BE INJECTED" | tee -a deploy.log
+#		if [[ $6 == *".sh" ]]; then
+#			sh "$5"/bin/shutdown.sh 
+#			sh "$5"/bin/run.sh
+#		else 
+#			service $6 stop
+#			service $6 start 
+#		fi
 		
 	else 
 		

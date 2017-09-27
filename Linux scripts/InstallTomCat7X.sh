@@ -11,7 +11,7 @@ DATE_WITH_TIME=`date "+[%d/%m/%Y %H:%M:%S]"`
 [ -z $3 ] && echo $DATE_WITH_TIME "Collector IP missing" | tee -a deploy.log  | exit 1 ## collectr ip
 [ -z $4 ] && echo $DATE_WITH_TIME "Agent Name missing" | tee -a deploy.log | exit 1 ## agent name
 [ -z $5 ] && echo $DATE_WITH_TIME "TomCat directory missing missing" | tee -a deploy.log | exit 1 ## tomcat directory
-[ -z $6 ] && echo $DATE_WITH_TIME "TomCat service  missing missing" | tee -a deploy.log  | exit 1 ## tomcat directory
+#[ -z $6 ] && echo $DATE_WITH_TIME "TomCat service  missing missing" | tee -a deploy.log  | exit 1 ## tomcat directory
 
 #DTHOME=$1
 #BITNESS=$2
@@ -83,21 +83,21 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 				fi
 			fi
 
-			### RESTARTS HERE  OUTAGE
-			echo $DATE_WITH_TIME "Restarting Tomcat service " | tee -a deploy.log	
+		
+			echo $DATE_WITH_TIME "YOU MUST RESTART TOMCAT SERVICES FOR AGENT TO BE INJECTED" | tee -a deploy.log
 			
-	if [[ $6 == *".sh" ]]; then
-		if [ $6 == "startup.sh" ];then 
-			sh  $5/bin/shutdown.sh
-			sh  $5/bin/$6 
-		else 
-			sh $5/bin/$6 stop
-			sh $5/bin/$6 start
-		fi
-	else 
-		service $6 stop
-		service $6 start 
-	fi
+#	if [[ $6 == *".sh" ]]; then
+#		if [ $6 == "startup.sh" ];then 
+#			sh  $5/bin/shutdown.sh
+#			sh  $5/bin/$6 
+#		else 
+#			sh $5/bin/$6 stop
+#			sh $5/bin/$6 start
+#		fi
+#	else 
+#		service $6 stop
+#		service $6 start 
+#	fi
 			
 else
 
