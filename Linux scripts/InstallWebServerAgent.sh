@@ -55,7 +55,11 @@ echo $DATE_WITH_TIME "Starting to run the installer"
 
 ## tar them 
 
-tar -xvf /opt/dynatrace-wsagent-$2.tar
+TARHOME="$(which tar)"
+
+#tar -xvf /opt/dynatrace-wsagent-$2.tar
+
+${TARHOME} -xvf /opt/dynatrace-wsagent-$2.tar
 
 if [ $? -eq 0 ]; then
 	echo $DATE_WITH_TIME "Untar web server agent file successful" | tee deploy.log
@@ -67,7 +71,7 @@ fi
 echo $DATE_WITH_TIME "Making Dynatrace Web Server install script executable" | tee deploy.log
 ## make the run script executable
 
-chmod +rx dynatrace-ws*.sh 
+chmod +rx /opt/dynatrace-ws*.sh 
 
 if [ $? -eq 0 ]; then
 	echo $DATE_WITH_TIME "Untar web server agent file successful" | tee deploy.log
@@ -79,7 +83,7 @@ fi
 echo $DATE_WITH_TIME "Running dynatrace web server agent install script" | tee deploy.log
 
 ## run the execution script
-sh dynatrace-ws*.sh 
+sh /opt/dynatrace-ws*.sh 
 
 if [ $? -eq 0 ]; then
 	echo $DATE_WITH_TIME "Ran dynatrace web server agent install script successfully" | tee deploy.log

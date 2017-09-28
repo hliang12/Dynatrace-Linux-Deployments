@@ -48,7 +48,7 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 
         ## Insert agent path into setenv.sh 
 			echo $DATE_WITH_TIME "Inserting agent path to setenv.sh" | tee -a deploy.log
-            echo  "export CATALINA_OPTS=\"-agentpath:"$1"/agent/lib"$BITNESS"/libdtagent.so=name="$4",server="$3"" >> "$5"/bin/setenv.sh
+            echo  "export CATALINA_OPTS=\"-agentpath:"$1"/agent/lib"$BITNESS"/libdtagent.so=name="$4",server="$3"\"" >> "$5"/bin/setenv.sh
 			
 		## check if the echo command succeeded, if it failed then exit the script
 			if [ $? -eq 0 ]; then

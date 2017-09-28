@@ -15,8 +15,12 @@ echo $DATE_WITH_TIME "Starting Installation of Dynatrace Agent MSI"
 echo $DATE_WITH_TIME  "DT installation location is $DTHOME"
 
 ## tar them 
+TARHOME="$(which tar)"
 
-tar -xvf /opt/dynatrace-wsagent*.tar 
+
+${TARHOME} -xvf /opt/dynatrace-wsagent*.tar 
+
+#tar -xvf /opt/dynatrace-wsagent*.tar 
 
 if [ $? -eq 0 ]; then
 	echo $DATE_WITH_TIME "Untar web server agent file successful" | tee deploy.log
@@ -28,7 +32,7 @@ fi
 echo $DATE_WITH_TIME "Making Dynatrace Web Server install script executable" | tee deploy.log
 ## make the run script executable
 
-chmod +rx dynatrace-ws*.sh 
+chmod +rx /opt/dynatrace-ws*.sh 
 
 if [ $? -eq 0 ]; then
 	echo $DATE_WITH_TIME "Untar web server agent file successful" | tee deploy.log
@@ -40,7 +44,7 @@ fi
 echo $DATE_WITH_TIME "Running dynatrace web server agent install script" | tee deploy.log
 
 ## run the execution script
-sh dynatrace-ws*.sh 
+sh /opt/dynatrace-ws*.sh 
 
 if [ $? -eq 0 ]; then
 	echo $DATE_WITH_TIME "Ran dynatrace web server agent install script successfully" | tee deploy.log

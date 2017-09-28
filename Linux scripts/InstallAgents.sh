@@ -47,8 +47,11 @@ echo $DATE_WITH_TIME "Starting to run the installer"
 
 ## do tar here
 
-java -jar /opt/dynatrace-agent-"$2" -t $"1" -y
+JAVAHOME="$(which java)"
 
+#java -jar /opt/dynatrace-agent-"$2" -t $1 -y
+
+${JAVAHOME} -jar /opt/dynatrace-agent-"$2" -t $1 -y
 
 if [ $? -eq 0 ]; then
 	echo $DATE_WITH_TIME "Untar web server agent file successful" | tee deploy.log
