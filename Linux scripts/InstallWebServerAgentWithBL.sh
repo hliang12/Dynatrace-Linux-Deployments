@@ -17,46 +17,45 @@ echo $DATE_WITH_TIME  "DT installation location is $DTHOME"
 ## tar them 
 TARHOME="$(which tar)"
 
-
 ${TARHOME} -xvf /opt/dynatrace-wsagent*.tar 
 
 #tar -xvf /opt/dynatrace-wsagent*.tar 
 
 if [ $? -eq 0 ]; then
-	echo $DATE_WITH_TIME "Untar web server agent file successful" | tee deploy.log
+	echo $DATE_WITH_TIME "Untar web server agent file successful" | tee /opt/deploy.log
 else 
-	echo $DATE_WITH_TIME "Failed to untar web server agent file, exit code "$?"" | tee deploy.log
+	echo $DATE_WITH_TIME "Failed to untar web server agent file, exit code "$?"" | tee /opt/deploy.log
 	exit
 fi
 
-echo $DATE_WITH_TIME "Making Dynatrace Web Server install script executable" | tee deploy.log
+echo $DATE_WITH_TIME "Making Dynatrace Web Server install script executable" | tee /opt/deploy.log
 ## make the run script executable
 
 chmod +rx /opt/dynatrace-ws*.sh 
 
 if [ $? -eq 0 ]; then
-	echo $DATE_WITH_TIME "Untar web server agent file successful" | tee deploy.log
+	echo $DATE_WITH_TIME "Untar web server agent file successful" | tee /opt/deploy.log
 else 
-	echo $DATE_WITH_TIME "Failed to untar web server agent file, exit code "$?"" | tee deploy.log
+	echo $DATE_WITH_TIME "Failed to untar web server agent file, exit code "$?"" | tee /opt/deploy.log
 	exit
 fi
 
-echo $DATE_WITH_TIME "Running dynatrace web server agent install script" | tee deploy.log
+echo $DATE_WITH_TIME "Running dynatrace web server agent install script" | tee /opt/deploy.log
 
 ## run the execution script
 sh /opt/dynatrace-ws*.sh 
 
 if [ $? -eq 0 ]; then
-	echo $DATE_WITH_TIME "Ran dynatrace web server agent install script successfully" | tee deploy.log
+	echo $DATE_WITH_TIME "Ran dynatrace web server agent install script successfully" | tee /opt/deploy.log
 else 
-	echo $DATE_WITH_TIME "Failed to run web server agent install script, exit code "$?"" | tee deploy.log
+	echo $DATE_WITH_TIME "Failed to run web server agent install script, exit code "$?"" | tee /opt/deploy.log
 	exit
 fi
 
 
 ## copy dynatrace web server agent service to /etc/init.d
 
-cp $1/dynatrace-$2/init.d/dynaTraceWebServerAgent /etc/init.d
+cp $1/init.d/dynaTraceWebServerAgent /etc/init.d
 
 echo $DATE_WITH_TIME "Installed okay if no errors"
 

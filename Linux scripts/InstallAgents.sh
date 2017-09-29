@@ -17,27 +17,27 @@ echo $DATE_WITH_TIME  "DT installation location is ${DTHOME}"
 
 mkdir /tmp/mountPoint
 if [ $? -eq 0 ]; then
-	echo $DATE_WITH_TIME "Made mountPoint directory" | tee deploy.log
+	echo $DATE_WITH_TIME "Made mountPoint directory" | tee /opt/deploy.log
 else 
-	echo $DATE_WITH_TIME "Failed to make mountPoint directory, exit code "$?"" | tee deploy.log
+	echo $DATE_WITH_TIME "Failed to make mountPoint directory, exit code "$?"" | tee /opt/deploy.log
 	exit 
 fi
 
 
 mount -v -t cifs $5 /tmp/mountPoint -o username=$3,password=$4,sec=ntlm
 if [ $? -eq 0 ]; then
-	echo $DATE_WITH_TIME "Mounted repo location" | tee deploy.log
+	echo $DATE_WITH_TIME "Mounted repo location" | tee /opt/deploy.log
 else 
-	echo $DATE_WITH_TIME "Failed to mount repo location, exit code "$?"" | tee deploy.log
+	echo $DATE_WITH_TIME "Failed to mount repo location, exit code "$?"" | tee /opt/deploy.log
 	exit
 fi
 
 cp -p -u /tmp/mountPoint/dynatrace-agent-$2*.tar /opt/dynatrace-agent-$2.tar
 
 if [ $? -eq 0 ]; then
-	echo $DATE_WITH_TIME "Copied Web Server agent tar file" | tee deploy.log
+	echo $DATE_WITH_TIME "Copied Web Server agent tar file" | tee /opt/deploy.log
 else 
-	echo $DATE_WITH_TIME "Failed to copy web server agent tar file, exit code "$?"" | tee deploy.log
+	echo $DATE_WITH_TIME "Failed to copy web server agent tar file, exit code "$?"" | tee /opt/deploy.log
 	exit
 fi
 
@@ -54,29 +54,29 @@ JAVAHOME="$(which java)"
 ${JAVAHOME} -jar /opt/dynatrace-agent-"$2" -t $1 -y
 
 if [ $? -eq 0 ]; then
-	echo $DATE_WITH_TIME "Untar web server agent file successful" | tee deploy.log
+	echo $DATE_WITH_TIME "Untar web server agent file successful" | tee /opt/deploy.log
 else 
-	echo $DATE_WITH_TIME "Failed to untar web server agent file, exit code "$?"" | tee deploy.log
+	echo $DATE_WITH_TIME "Failed to untar web server agent file, exit code "$?"" | tee /opt/deploy.log
 	exit
 fi
 
-echo $DATE_WITH_TIME "Unmounting mountPoint" | tee deploy.log
+echo $DATE_WITH_TIME "Unmounting mountPoint" | tee /opt/deploy.log
 umount /tmp/mountPoint 
 
 if [ $? -eq 0 ]; then
-	echo $DATE_WITH_TIME "Unmounted successfully" | tee deploy.log
+	echo $DATE_WITH_TIME "Unmounted successfully" | tee /opt/deploy.log
 else 
-	echo $DATE_WITH_TIME "Failed to unmount, exit code "$?"" | tee deploy.log
+	echo $DATE_WITH_TIME "Failed to unmount, exit code "$?"" | tee /opt/deploy.log
 	exit
 fi
 
-echo $DATE_WITH_TIME "Removing mountPoint folder" | tee deploy.log
+echo $DATE_WITH_TIME "Removing mountPoint folder" | tee /opt/deploy.log
 rm -rf /tmp/mountPoint
 
 if [ $? -eq 0 ]; then
-	echo $DATE_WITH_TIME "Removing mountPoint folder" | tee deploy.log
+	echo $DATE_WITH_TIME "Removing mountPoint folder" | tee /opt/deploy.log
 else 
-	echo $DATE_WITH_TIME "Failed to remove mountPoint folder, exit code "$?"" | tee deploy.log
+	echo $DATE_WITH_TIME "Failed to remove mountPoint folder, exit code "$?"" | tee /opt/deploy.log
 	exit
 fi
 

@@ -21,9 +21,9 @@ echo $DATE_WITH_TIME  "DT installation location is "$1""
 
 mkdir /tmp/mountPoint
 if [ $? -eq 0 ]; then
-	echo $DATE_WITH_TIME "Made mountPoint directory" | tee deploy.log
+	echo $DATE_WITH_TIME "Made mountPoint directory" | tee /opt/deploy.log
 else 
-	echo $DATE_WITH_TIME "Failed to make mountPoint directory, exit code "$?"" | tee deploy.log
+	echo $DATE_WITH_TIME "Failed to make mountPoint directory, exit code "$?"" | tee /opt/deploy.log
 	exit 
 fi
 
@@ -32,9 +32,9 @@ fi
 
 mount -v -t cifs $6 /tmp/mountPoint -o username=$4,password=$5, sec=ntlm
 if [ $? -eq 0 ]; then
-	echo $DATE_WITH_TIME "Mounted repo location" | tee deploy.log
+	echo $DATE_WITH_TIME "Mounted repo location" | tee /opt/deploy.log
 else 
-	echo $DATE_WITH_TIME "Failed to mount repo location, exit code "$?"" | tee deploy.log
+	echo $DATE_WITH_TIME "Failed to mount repo location, exit code "$?"" | tee /opt/deploy.log
 	exit
 fi
 
@@ -43,9 +43,9 @@ fi
 cp -p -u /tmp/mountPoint/dynatrace-wsagent-$2*.tar /opt/dynatrace-wsagent-$2.tar
 
 if [ $? -eq 0 ]; then
-	echo $DATE_WITH_TIME "Copied Web Server agent tar file" | tee deploy.log
+	echo $DATE_WITH_TIME "Copied Web Server agent tar file" | tee /opt/deploy.log
 else 
-	echo $DATE_WITH_TIME "Failed to copy web server agent tar file, exit code "$?"" | tee deploy.log
+	echo $DATE_WITH_TIME "Failed to copy web server agent tar file, exit code "$?"" | tee /opt/deploy.log
 	exit
 fi
 
@@ -62,33 +62,33 @@ TARHOME="$(which tar)"
 ${TARHOME} -xvf /opt/dynatrace-wsagent-$2.tar
 
 if [ $? -eq 0 ]; then
-	echo $DATE_WITH_TIME "Untar web server agent file successful" | tee deploy.log
+	echo $DATE_WITH_TIME "Untar web server agent file successful" | tee /opt/deploy.log
 else 
-	echo $DATE_WITH_TIME "Failed to untar web server agent file, exit code "$?"" | tee deploy.log
+	echo $DATE_WITH_TIME "Failed to untar web server agent file, exit code "$?"" | tee /opt/deploy.log
 	exit
 fi
 
-echo $DATE_WITH_TIME "Making Dynatrace Web Server install script executable" | tee deploy.log
+echo $DATE_WITH_TIME "Making Dynatrace Web Server install script executable" | tee /opt/deploy.log
 ## make the run script executable
 
 chmod +rx /opt/dynatrace-ws*.sh 
 
 if [ $? -eq 0 ]; then
-	echo $DATE_WITH_TIME "Untar web server agent file successful" | tee deploy.log
+	echo $DATE_WITH_TIME "Untar web server agent file successful" | tee /opt/deploy.log
 else 
-	echo $DATE_WITH_TIME "Failed to untar web server agent file, exit code "$?"" | tee deploy.log
+	echo $DATE_WITH_TIME "Failed to untar web server agent file, exit code "$?"" | tee /opt/deploy.log
 	exit
 fi
 
-echo $DATE_WITH_TIME "Running dynatrace web server agent install script" | tee deploy.log
+echo $DATE_WITH_TIME "Running dynatrace web server agent install script" | tee /opt/deploy.log
 
 ## run the execution script
 sh /opt/dynatrace-ws*.sh 
 
 if [ $? -eq 0 ]; then
-	echo $DATE_WITH_TIME "Ran dynatrace web server agent install script successfully" | tee deploy.log
+	echo $DATE_WITH_TIME "Ran dynatrace web server agent install script successfully" | tee /opt/deploy.log
 else 
-	echo $DATE_WITH_TIME "Failed to run web server agent install script, exit code "$?"" | tee deploy.log
+	echo $DATE_WITH_TIME "Failed to run web server agent install script, exit code "$?"" | tee /opt/deploy.log
 	exit
 fi
 
@@ -98,23 +98,23 @@ cp $1/dynatrace-$2/init.d/dynaTraceWebServerAgent /etc/init.d
 
 ## CLEANUP 
 
-echo $DATE_WITH_TIME "Unmounting mountPoint" | tee deploy.log
+echo $DATE_WITH_TIME "Unmounting mountPoint" | tee /opt/deploy.log
 umount /tmp/mountPoint 
 
 if [ $? -eq 0 ]; then
-	echo $DATE_WITH_TIME "Unmounted successfully" | tee deploy.log
+	echo $DATE_WITH_TIME "Unmounted successfully" | tee /opt/deploy.log
 else 
-	echo $DATE_WITH_TIME "Failed to unmount, exit code "$?"" | tee deploy.log
+	echo $DATE_WITH_TIME "Failed to unmount, exit code "$?"" | tee /opt/deploy.log
 	exit
 fi
 
-echo $DATE_WITH_TIME "Removing mountPoint folder" | tee deploy.log
+echo $DATE_WITH_TIME "Removing mountPoint folder" | tee /opt/deploy.log
 rm -rf /tmp/mountPoint
 
 if [ $? -eq 0 ]; then
-	echo $DATE_WITH_TIME "Removing mountPoint folder" | tee deploy.log
+	echo $DATE_WITH_TIME "Removing mountPoint folder" | tee /opt/deploy.log
 else 
-	echo $DATE_WITH_TIME "Failed to remove mountPoint folder, exit code "$?"" | tee deploy.log
+	echo $DATE_WITH_TIME "Failed to remove mountPoint folder, exit code "$?"" | tee /opt/deploy.log
 	exit
 fi
 

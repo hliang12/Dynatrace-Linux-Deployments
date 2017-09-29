@@ -25,13 +25,13 @@ JAVAHOME="$(which java)"
 ${JAVAHOME} -jar  /opt/dynatrace-agent*.jar -t $1 -y
 
 if [ $? -eq 0 ]; then
-	echo $DATE_WITH_TIME "Untar web server agent file successful" | tee deploy.log
+	echo $DATE_WITH_TIME "Untar web server agent file successful" | tee /opt/deploy.log
 else 
-	echo $DATE_WITH_TIME "Failed to jar web server agent file, exit code "$?"" | tee deploy.log
+	echo $DATE_WITH_TIME "Failed to jar web server agent file, exit code "$?"" | tee /opt/deploy.log
 	exit
 fi
 
-echo $DATE_WITH_TIME "Finished installation if no errors" | tee deploy.log
+echo $DATE_WITH_TIME "Finished installation if no errors" | tee /opt/deploy.log
 
 
 
