@@ -4,13 +4,13 @@
 DATE_WITH_TIME=`date "+[%d/%m/%Y %H:%M:%S]"`
 touch  /opt/deploy.log
 
-[ -z $1 ] && echo $DATE_WITH_TIME "DTHOME argument missing" | tee -a deploy.log |exit 1 ##dthome
-[ -z $2 ] && echo $DATE_WITH_TIME "Bitness missing missing" |tee -a deploy.log | exit 1 ## bitness 
-[ -z $3 ] && echo $DATE_WITH_TIME "Collector IP missing" |tee -a deploy.log |exit 1 ## collectr ip ;
-[ -z $4 ] && echo $DATE_WITH_TIME "Agent Name missing"  | tee -a deploy.log |exit 1 ## agent name 
-[ -z $5 ] && echo $DATE_WITH_TIME "JBOSS dir directory missing missing" | tee -a deploy.log |exit 1 ## jboss dir directory
-[ -z $6 ] && echo $DATE_WITH_TIME "mode type is missing" | tee -a deploy.log |exit 1 ## mode type 
-[ -z $7 ] && echo $DATE_WITH_TIME "JBOSS SERVICE" | tee -a deploy.log |exit 1 ## mode type 
+[ -z $1 ] && echo $DATE_WITH_TIME "DTHOME argument missing" | tee -a /opt/deploy.log |exit 1 ##dthome
+[ -z $2 ] && echo $DATE_WITH_TIME "Bitness missing missing" |tee -a /opt/deploy.log | exit 1 ## bitness 
+[ -z $3 ] && echo $DATE_WITH_TIME "Collector IP missing" |tee -a /opt/deploy.log |exit 1 ## collectr ip ;
+[ -z $4 ] && echo $DATE_WITH_TIME "Agent Name missing"  | tee -a /opt/deploy.log |exit 1 ## agent name 
+[ -z $5 ] && echo $DATE_WITH_TIME "JBOSS dir directory missing missing" | tee -a /opt/deploy.log |exit 1 ## jboss dir directory
+[ -z $6 ] && echo $DATE_WITH_TIME "mode type is missing" | tee -a /opt/deploy.log |exit 1 ## mode type 
+#[ -z $7 ] && echo $DATE_WITH_TIME "JBOSS SERVICE" | tee -a /opt/deploy.log |exit 1 ## mode type 
 
 #DTHOME=$1 
 #BITNESS=$2
@@ -30,12 +30,12 @@ fi
 BITNESS=""
 if [ "$2" = "64" ]; then 
  BITNESS="64"
- echo $DATE_WITH_TIME "64 bit" | tee -a  deploy.log
+ echo $DATE_WITH_TIME "64 bit" | tee -a  /opt/deploy.log
 else 
 	if [ "$2" = "32" ]; then 
-		echo $DATE_WITH_TIME "32 bit" | tee -a deploy.log
+		echo $DATE_WITH_TIME "32 bit" | tee -a /opt/deploy.log
 	else 
-		echo $DATE_WITH_TIME "Inputted incorrect bitness argument" | tee deploy.log
+		echo $DATE_WITH_TIME "Inputted incorrect bitness argument" | tee /opt/deploy.log
 		exit 1
 	fi
 fi
@@ -44,20 +44,20 @@ fi
 if [ -d "$1" ] && [ -d "$5" ]; then
 
 	if [ "$6" = "standalone" ]; then
-		echo $DATE_WITH_TIME "Inserting agent path for jboss standalone mode" | tee -a deploy.log 
+		echo $DATE_WITH_TIME "Inserting agent path for jboss standalone mode" | tee -a /opt/deploy.log 
 		echo  "JAVA_OPTS=\"\$JAVA_OPTS -agentpath:\""$1"/agent/lib"$BITNESS"/libdtagent.so\"=name="$4",server="$3"\"" >> "$5"/bin/standalone.conf
 
 	elif  [ "$6" = "domain" ]; then
-		echo $DATE_WITH_TIME "Inserting agent path for jboss domain mode" | tee -a deploy.log 
-		echo $DATE_WITH_TIME "Checking if domain.xml cotainst <jvm-options>" | tee -a deploy.log 
+		echo $DATE_WITH_TIME "Inserting agent path for jboss domain mode" | tee -a /opt/deploy.log 
+		echo $DATE_WITH_TIME "Checking if domain.xml cotainst <jvm-options>" | tee -a /opt/deploy.log 
 		if grep -q "<jvm-options>" ""$5"/domain/configuration/domain.xml"; then
 			#found add it into the jvm options part
 			
-			echo $DATE_WITH_TIME "Found <jvm-options> will add another <options> tag too it" | tee -a deploy.log 
+			echo $DATE_WITH_TIME "Found <jvm-options> will add another <options> tag too it" | tee -a /opt/deploy.log 
 			sed -i "/<jvm-options>/a  <option value=\"-agentpath:\"$1/agent/lib/libdtagent.so\"=name=$4,server=$3\"/>"  $5/domain/configuration/domain.xml
 			
 			##check if sed worked 
-			echo $DATE_WITH_TIME "Check if added the options tag correctly" | tee -a deploy.log 
+			echo $DATE_WITH_TIME "Check if added the options tag correctly" | tee -a /opt/deploy.log 
 			if grep -q "<option value=\"-agentpath:\"$1/agent/lib/libdtagent.so\"=name=$4,server=$3\"/>" "$5/domain/configuration/domain.xml" ; then
 				## added fine
 				echo $DATE_WITH_TIME "Added agent path options in fine"
@@ -69,29 +69,29 @@ if [ -d "$1" ] && [ -d "$5" ]; then
 			
 		else 
 			#not found
-			echo $DATE_WITH_TIME "No <jvm-options> tag, adding this in with <options> tag " | tee -a deploy.log 
+			echo $DATE_WITH_TIME "No <jvm-options> tag, adding this in with <options> tag " | tee -a /opt/deploy.log 
 			 sed -i "/<heap .*>/a <jvm-options><option value=\"-agentpath:\"$1/agent/lib/libdtagent.so\"=name=$4,server=$3\"/> <jvm-options/>" $5/domain/configuration/domain.xml
 
 			 ##check if sed worked 
-			 echo $DATE_WITH_TIME "Checking if adding successfully" | tee -a deploy.log 
+			 echo $DATE_WITH_TIME "Checking if adding successfully" | tee -a /opt/deploy.log 
 			if grep -q "<jvm-options><option value=\"-agentpath:\"$1/agent/lib/libdtagent.so\"=name=$4,server=$3\"/> <jvm-options/>" "$5/domain/configuration/domain.xml"; then
 				## added fine
-				echo $DATE_WITH_TIME "Added agent path options in fine"| tee -a deploy.log 
+				echo $DATE_WITH_TIME "Added agent path options in fine"| tee -a /opt/deploy.log 
 			else 
 				##failed 
-				echo $DATE_WITH_TIME "Failed to add the agent" | tee -a deploy.log 
+				echo $DATE_WITH_TIME "Failed to add the agent" | tee -a /opt/deploy.log 
 				exit 1
 			fi
 		fi 
 		
-		echo $DATE_WITH_TIME "Restarting jboss services" | tee -a deploy.log 
-		if [[ $6 == *".sh" ]]; then
-			sh "$5"/bin/shutdown.sh 
-			sh "$5"/bin/run.sh
-		else 
-			service $6 stop
-			service $6 start 
-		fi
+		echo $DATE_WITH_TIME "YOU MUST RESTART JBOSS SERVICES FOR AGENT TO BE INJECTED" | tee -a /opt/deploy.log
+#		if [[ $6 == *".sh" ]]; then
+#			sh "$5"/bin/shutdown.sh 
+#			sh "$5"/bin/run.sh
+#		else 
+#			service $6 stop
+#			service $6 start 
+#		fi
 		
 	else 
 		
